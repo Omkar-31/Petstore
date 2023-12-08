@@ -1,0 +1,68 @@
+{% include "header.html" with page_title="View Pet | Pet Paw" %}
+
+<section class="py-5">
+    <div class="container">
+        {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{success}}
+            </div>
+        {% endif %}
+        <div class="row gx-5">
+            <aside class="col-lg-6">
+                <div class="border rounded-4 mb-3 d-flex justify-content-center">
+                    <img style="max-width: 100%; max-height: 100vh; margin: auto;object-fit: cover;object-position: center;" src="{{pet.image.url}}" />
+                </div>
+            </aside>
+            <main class="col-lg-6">
+                <div class="ps-lg-3">
+                    <h4 class="title text-dark">
+                        {{pet.name}}
+                    </h4>
+
+                    <div class="mb-3">
+                        <span class="h5">{{pet.breed}}</span>
+                    </div>
+
+                   
+                    <div class="row">
+                        <dt class="col-3">Description</dt>
+                        <dd class="col-9">{{pet.description}}</dd>
+
+                        <dt class="col-3">Species</dt>
+                        <dd class="col-9">{{pet.species}}</dd>
+
+                        <dt class="col-3">Price</dt>
+                        <dd class="col-9">Rs. {{pet.price}}</dd>
+
+                        <dt class="col-3">Age</dt>
+                        <dd class="col-9">{{pet.age}}</dd>
+
+                        <dt class="col-3">Available</dt>
+                        <dd class="col-9">{{pet.available}}</dd>
+                    </div>
+
+                    <hr />
+
+                    
+                    <div class="d-flex justify-content-between">
+                        <form action="/addToCart" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="pet_id" value="{{pet.id}}">
+                            {% if btn_text %}
+                                <button class="btn btn-primary shadow-0">
+                                    <i class="fa-solid fa-cart-plus"></i> {{btn_text}}
+                                </button>
+                            {% else %}
+                                <button class="btn btn-primary shadow-0">
+                                    <i class="fa-solid fa-cart-plus"></i> Add to cart
+                                </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                    <!-- <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
+                            class="me-1 fa fa-heart fa-lg"></i> Save </a> -->
+                </div>
+            </main>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,127 @@
+{% include "header.html" with page_title="My Cart" %}
+
+<style>
+    .custom-btn{
+        background: none;
+        border: none;
+        outline: none;
+    }
+
+    .custom-btn:hover{
+        background:none;
+    }
+</style>
+
+<div class="container mt-5 h-100">
+    <div class="row d-flex justify-content-center h-100">
+        {% if cart %}
+        
+        <div class="col">
+            <p><span class="h2">Shopping Cart </span><span class="h4">({{ cart|length }} item in your cart)</span></p>
+
+            {% for i in cart %}
+                {{i.pet.}}
+                <div class="card mb-4">
+                    <div class="card-body p-4">
+
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="{{i.pet.image}}"
+                                    class="img-fluid" alt="Generic placeholder image">
+                            </div>
+                            <div class="col-md-2 d-flex justify-content-center">
+                                <div>
+                                    <p class="small text-muted mb-4 pb-2">Name</p>
+                                    <p class="lead fw-normal mb-0">{{i.pet.name}}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 d-flex justify-content-center">
+                                <div>
+                                    <p class="small text-muted mb-4 pb-2">Quantity</p>
+                                    <div style="display: flex;justify-content: center;align-items: center;">
+                                        <form action="cartquantity" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="increase">
+                                            <input type="hidden" name="cart_id" value="{{i.id}}">
+                                            <button type="submit" class="custom-btn btn btn-light"><i class="fa-solid fa-plus"></i></button>
+                                        </form>
+                                        <p class="lead fw-normal mb-0">{{i.quantity}}</p>
+                                        <form action="cartquantity" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="decrease">
+                                            <input type="hidden" name="cart_id" value="{{i.id}}">
+                                            <button type="submit" class="custom-btn btn btn-light"><i class="fa-solid fa-minus"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-2 d-flex justify-content-center">
+                                <div>
+                                    <p class="small text-muted mb-4 pb-2">Price</p>
+                                    <p class="lead fw-normal mb-0">&#8377 {{i.pet.price}}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2 d-flex justify-content-center">
+                                <div>
+                                    <p class="small text-muted mb-4 pb-2">Total</p>
+                                    {% comment %} <p class="lead fw-normal mb-0">&#8377 {{i.pet.price}}*{{i.quantity}}</p> {% endcomment %}
+                                    <p class="lead fw-normal mb-0">&#8377 {% widthratio i.quantity 1 i.pet.price %}</p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                <form action="removecart" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cart_id" value="{{i.id}}">
+                                    <button type="submit" class="custom-btn" style="color: red;"><i class="fas fa-trash fa-lg"></i></button>
+                                </form>
+                              </div>
+                        </div>
+                        
+                    </div>
+                </div>            
+                {% endfor %}
+        </div>
+
+        <div class="col-md-4 mt-5 ">
+            <div class="card mb-4 ">
+                <div class="card-header py-3">
+                    <h5 class="mb-0">Summary</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% comment %} <li
+                            class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                            Products 
+                            <span>$53.98</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            Shipping
+                            <span>Gratis</span>
+                        </li> {% endcomment %}
+                        <li
+                            class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                            <div>
+                                <strong>Total amount</strong>
+                            </div>
+                            <span><strong>&#8377 {{total}}</strong></span>
+                        </li>
+                    </ul>
+
+                    <a href="/order" class="btn btn-warning btn-lg btn-block">
+                        Proceed to Buy
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-light" role="alert">
+            <strong>Your Cart Is Empty</strong>
+          </div>
+        {% endif %}
+    </div>
+</div>
+</section>

@@ -1,0 +1,157 @@
+{% include "header.html" with page_title="Order Details" %}
+<style>
+  .address_form{
+    margin-top: 10px;
+    padding-top: 10px;
+    width: 800px;
+    height:600px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: auto;
+    /* border: solid gray 2px; */
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px 2px grey;
+  }
+  .address_form label{
+    margin-left: 100px;
+    font-size: 18px;
+    color: black;
+  }
+  .address_form input{
+    border: solid  2px; 
+    margin-bottom: 20px;
+    height: 40px;
+    width: 250px;
+    margin-left: 100px;
+    border-radius: 5px;
+  }
+  .address_form select{
+    margin-bottom: 20px;
+    height: 40px;
+    width: 250px;
+    margin-left: 80px;
+  }
+  .address_form option{
+    margin-bottom: 20px;
+    height: 40px;
+    width: 250px;
+  }
+</style>
+<div class="address_form">
+<form action="/order" method="post">
+    {% csrf_token %}
+    <h2 style="margin-left: 100px; color: blue;">Place Order</h2><br>
+    <!-- {{form.as_p}} -->
+
+    <label class="form-label" >First Name</label>
+    <label class="form-label" style="margin-left: 262px;">Last Name</label><br>
+
+    <input type="text" name="fname" placeholder="First Name"/>
+    <input type="text" name="lname" placeholder="Last Name"/><br>
+
+    <label class="form-label" >Bulding No: </label>
+    <label class="form-label" style="margin-left: 252px;">Address Line 1</label><br>
+    <input type="text" name="building" placeholder="Bulding No:"/>
+    <input type="text" name="add1" placeholder="Address Line 1"/><br>
+
+    <label class="form-label" >Address Line 2</label>
+    <label class="form-label" style="margin-left: 232px;" >City</label><br>
+    <input type="text" name="add2" placeholder="Address Line 2"/>
+    <input type="text" name="city" placeholder="City"/><br>
+
+    <label class="form-label" >Pincode</label>
+    <label class="form-label" style="margin-left: 285px;">State</label><br>
+    <input type="text" name="pincode" placeholder="Pincode"/>
+    <input type="text" name="state" placeholder="State"/>
+
+    <p style="margin-left: 100px; color: rgb(0, 135, 0); font-size:23px;" >Total Amount = &#8377 {{total}}</p>
+
+    <input type="submit" style="width: 150px; background-color: blue; color: white; border-radius: 15px;">
+
+  </div>
+
+</form>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+
+    <script>
+        var amount= {{total}}
+     function initPayPalButton() {
+
+paypal.Buttons({
+
+  style: {
+
+    shape: 'rect',
+
+    color: 'gold',
+
+    layout: 'vertical',
+
+    label: 'paypal',
+
+   
+
+  },
+
+
+
+  createOrder: function(data, actions) {
+
+    return actions.order.create({
+
+      purchase_units: [{"amount":{"currency_code":"USD","value":amount}}]
+
+    });
+
+  },
+
+
+
+  onApprove: function(data, actions) {
+
+    return actions.order.capture().then(function(orderData) {
+
+     
+
+      // Full available details
+
+      console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+
+
+      // Show a success message within this page, e.g.
+
+      const element = document.getElementById('paypal-button-container');
+
+      element.innerHTML = '';
+
+      element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+
+
+      // Or go to another URL: actions.redirect('thank_you.html');
+
+     
+
+    });
+
+  },
+
+
+
+  onError: function(err) {
+
+    console.log(err);
+
+  }
+
+}).render('#paypal-button-container');
+
+}
+
+initPayPalButton();
+
+</script>

@@ -1,0 +1,169 @@
+{% include "header.html" with page_title="Order Details" %}
+
+<section class="h-100 h-custom" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-8 col-xl-6">
+        <div class="card border-top border-bottom border-3" style="border-color: #f37a27 !important;">
+          <div class="card-body p-5">
+
+            <p class="lead fw-bold mb-5" style="color: #f37a27;">Thanks for your Order, {{request.session.CustomerName}}!</p>
+
+            <div class="row">
+              <div class="col mb-3">
+                <p class="small text-muted mb-1">Date</p>
+                <p>{{orderdetail.order_date}}</p>
+              </div>
+              <div class="col mb-3">
+                <p class="small text-muted mb-1">Order No.</p>
+                <p>{{orderdetail.order_no}}</p>
+              </div>
+            </div>
+            {% for i in cart%}
+            <div class="mx-n5 px-5 py-4" style="background-color: #f2f2f2;">
+              <div class="row">
+                <div class="col-md-8 col-lg-9">
+                  <p>Species</p>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                  <p>{{i.pet.species}}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8 col-lg-9">
+                  <p>Breed</p>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                  <p>{{i.pet.breed}}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8 col-lg-9">
+                  <p>Age</p>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                  <p>{{i.pet.age}}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8 col-lg-9">
+                  <p>Quantity</p>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                  <p>{{i.quantity}}</p>
+                </div>
+              </div>
+              </div>
+
+              
+              {%endfor%}
+
+            <div class="row my-4">
+              <div class="col-md-4 offset-md-8 col-lg-3 offset-lg-9">
+                <p class="lead fw-bold mb-0">Total : {{orderdetail.total_amount}}</p>
+              </div>
+              <div id="paypal-button-container"></div>
+              <form action="../payment" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="ts_id" id="ts_id" value="">
+                <input type="hidden" name="status" id="status" value="">
+                <input type="hidden" name="amount" id="amount" value="">
+                <input type="hidden" name="order_no" value="{{orderdetail.order_no}}">
+                <button type="submit" id="submit-btn" style="display:none;" class="btn btn-warning">Proced</button>
+              </form>
+            </div>
+          </div>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+
+    <script>
+        var amount= {{orderdetail.total_amount}}
+     function initPayPalButton() {
+
+paypal.Buttons({
+
+  style: {
+
+    shape: 'rect',
+
+    color: 'gold',
+
+    layout: 'vertical',
+
+    label: 'paypal',
+
+   
+
+  },
+
+
+
+  createOrder: function(data, actions) {
+
+    return actions.order.create({
+
+      purchase_units: [{"amount":{"currency_code":"USD","value":amount}}]
+
+    });
+
+  },
+
+
+
+  onApprove: function(data, actions) {
+
+    return actions.order.capture().then(function(orderData) {
+
+     
+
+      // Full available details
+
+      console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+
+
+      // Show a success message within this page, e.g.
+
+      const element = document.getElementById('paypal-button-container');
+
+      element.innerHTML = '';
+
+      element.innerHTML = '<h3>Thank you for your payment!</h3>';
+      
+
+        document.getElementById('ts_id').value = orderData['id'];
+        document.getElementById('status').value = orderData['status'];
+        document.getElementById('amount').value = {{orderdetail.total_amount}}
+        document.getElementById("submit-btn").style.display = ""
+
+      // Or go to another URL: actions.redirect('thank_you.html');
+
+     
+
+    });
+
+  },
+
+
+
+  onError: function(err) {
+
+    console.log(err);
+
+  }
+
+}).render('#paypal-button-container');
+
+}
+
+initPayPalButton();
+
+</script>

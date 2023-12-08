@@ -1,0 +1,51 @@
+{% include 'header.html' with page_title="Pets App" %}
+
+<div class="container py-5">
+    {% if result %}
+    <div class="alert alert-info" role="alert">
+        {{result}}
+    </div>
+    {% endif %}
+    <div class="row">
+        {% for i in pets %}
+            <div class="col-md-12 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <img src="{{i.image.url}}"
+                        class="card-img-top" >
+                    <div class="card-body">
+                        
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">Breed</h5>
+                            <h5 class="text-dark mb-0">{{i.breed}}</h5>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">Name</h5>
+                            <h5 class="text-dark mb-0">{{i.name}}</h5>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="text-muted mb-0">Available</p>
+                        </div>
+
+                        <div class="d-flex justify-content-center mb-2">
+                            <form action="petinfo" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="pet_id" value="{{i.id}}">
+                                <button type="submit" class="btn btn-primary">View</button>
+                            </form>
+                        </div> 
+                        <!-- <div class="d-flex justify-content-center mb-2">
+                    
+                                <a href="petinfo/{{i.slug}}" class="btn btn-primary">View</a>
+                        </div> -->
+                    </div>
+                </div>
+                <br>
+            </div>
+        {% endfor %}
+</div>
+</div>
+</body>
+
+</html>
